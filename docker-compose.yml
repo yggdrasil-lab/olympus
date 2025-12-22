@@ -1,8 +1,8 @@
 version: '3.8'
 
 networks:
-  homelab-net:
-    external: false
+  aether-net:
+    external: true
 
 services:
   traefik:
@@ -39,7 +39,7 @@ services:
       - "CLOUDFLARE_EMAIL=${CLOUDFLARE_EMAIL}"
       - "CLOUDFLARE_API_KEY=${CLOUDFLARE_API_KEY}"
     networks:
-      - homelab-net
+      - aether-net
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "traefik-data:/letsencrypt" # Persist ACME certificates
@@ -54,7 +54,7 @@ services:
       - TUNNEL_TOKEN=${TUNNEL_TOKEN}
     command: tunnel run
     networks:
-      - homelab-net
+      - aether-net
     labels:
       - "traefik.enable=false"
 
@@ -63,7 +63,7 @@ services:
     container_name: "whoami"
     restart: unless-stopped
     networks:
-      - homelab-net
+      - aether-net
     labels:
       - "traefik.enable=true"
       # Define a single service for the whoami container
