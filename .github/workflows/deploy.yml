@@ -1,0 +1,21 @@
+name: Deploy to Gaia
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create .env file
+        run: |
+          echo "TUNNEL_TOKEN=${{ secrets.TUNNEL_TOKEN }}" >> .env
+          echo "CLOUDFLARE_DOMAIN=${{ secrets.CLOUDFLARE_DOMAIN }}" >> .env
+          echo "CLOUDFLARE_EMAIL=${{ secrets.CLOUDFLARE_EMAIL }}" >> .env
+          echo "CLOUDFLARE_API_KEY=${{ secrets.CLOUDFLARE_API_KEY }}" >> .env
+
+      - name: Deploy with Docker Compose
+        run: docker compose up -d --remove-orphans
