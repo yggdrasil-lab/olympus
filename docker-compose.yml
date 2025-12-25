@@ -6,7 +6,7 @@ networks:
 
 services:
   traefik:
-    image: "traefik:v2.10"
+    image: "traefik:v2.11"
     container_name: "traefik"
     restart: unless-stopped
     security_opt:
@@ -38,6 +38,7 @@ services:
     environment:
       - "CLOUDFLARE_EMAIL=${CLOUDFLARE_EMAIL}"
       - "CLOUDFLARE_API_KEY=${CLOUDFLARE_API_KEY}"
+      - "DOCKER_API_VERSION=1.44"
     networks:
       - aether-net
     volumes:
