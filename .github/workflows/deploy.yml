@@ -17,5 +17,7 @@ jobs:
           echo "CLOUDFLARE_EMAIL=${{ secrets.CLOUDFLARE_EMAIL }}" >> .env
           echo "CLOUDFLARE_API_KEY=${{ secrets.CLOUDFLARE_API_KEY }}" >> .env
 
-      - name: Deploy with Docker Compose
-        run: docker compose up -d --remove-orphans
+      - name: Deploy with start.sh
+        run: |
+          chmod +x start.sh
+          ./start.sh

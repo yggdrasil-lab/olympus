@@ -9,4 +9,4 @@ else
 fi
 
 # Start the services
-docker compose up -d
+docker compose up -d --remove-orphans
