@@ -10,15 +10,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Create .env file
-        run: |
-          echo "TUNNEL_TOKEN=${{ secrets.TUNNEL_TOKEN }}" >> .env
-          echo "CLOUDFLARE_DOMAIN=${{ vars.DOMAIN_NAME }}" >> .env
-          echo "TRAEFIK_SUBDOMAIN=${{ vars.TRAEFIK_SUBDOMAIN }}" >> .env
-          echo "CLOUDFLARE_EMAIL=${{ secrets.CLOUDFLARE_EMAIL }}" >> .env
-          echo "CLOUDFLARE_API_KEY=${{ secrets.CLOUDFLARE_API_KEY }}" >> .env
-
       - name: Deploy with start.sh
+        env:
+          TUNNEL_TOKEN: ${{ secrets.TUNNEL_TOKEN }}
+          CLOUDFLARE_DOMAIN: ${{ vars.DOMAIN_NAME }}
+          TRAEFIK_SUBDOMAIN: ${{ vars.TRAEFIK_SUBDOMAIN }}
+          PORTAINER_SUBDOMAIN: ${{ vars.PORTAINER_SUBDOMAIN }}
+          CLOUDFLARE_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
+          CLOUDFLARE_API_KEY: ${{ secrets.CLOUDFLARE_API_KEY }}
         run: |
           chmod +x start.sh
           ./start.sh
