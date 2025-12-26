@@ -14,18 +14,16 @@ services:
     ports:
       - "80:80"   # HTTP
       - "443:443" # HTTPS
-      - "8080:8080" # Traefik Dashboard (local access only)
     command:
       # Core settings
       - "--log.level=INFO"
-      - "--api.insecure=true"
+      - "--api.dashboard=true" # Enable dashboard
       # Providers
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       # Entrypoints
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
-      - "--entrypoints.traefik.address=:8080"
       # Global HTTP to HTTPS redirection
       - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
       - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
@@ -44,6 +42,14 @@ services:
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "traefik-data:/letsencrypt" # Persist ACME certificates
+    labels:
+      - "traefik.enable=true"
+      # Dashboard Router
+      - "traefik.http.routers.traefik-dashboard.rule=Host(`${TRAEFIK_SUBDOMAIN}.${CLOUDFLARE_DOMAIN}`)"
+      - "traefik.http.routers.traefik-dashboard.entrypoints=websecure"
+      - "traefik.http.routers.traefik-dashboard.service=api@internal"
+      - "traefik.http.routers.traefik-dashboard.tls.certresolver=cloudflare"
+      # - "traefik.http.routers.traefik-dashboard.middlewares=authelia" # Enable after Authelia is ready
 
   cloudflared:
     image: "cloudflare/cloudflared:latest"

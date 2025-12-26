@@ -14,6 +14,7 @@ jobs:
         run: |
           echo "TUNNEL_TOKEN=${{ secrets.TUNNEL_TOKEN }}" >> .env
           echo "CLOUDFLARE_DOMAIN=${{ vars.DOMAIN_NAME }}" >> .env
+          echo "TRAEFIK_SUBDOMAIN=${{ vars.TRAEFIK_SUBDOMAIN }}" >> .env
           echo "CLOUDFLARE_EMAIL=${{ secrets.CLOUDFLARE_EMAIL }}" >> .env
           echo "CLOUDFLARE_API_KEY=${{ secrets.CLOUDFLARE_API_KEY }}" >> .env
 
