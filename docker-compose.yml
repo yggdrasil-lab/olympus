@@ -49,7 +49,7 @@ services:
       - "traefik.http.routers.traefik-dashboard.entrypoints=websecure"
       - "traefik.http.routers.traefik-dashboard.service=api@internal"
       - "traefik.http.routers.traefik-dashboard.tls.certresolver=cloudflare"
-      # - "traefik.http.routers.traefik-dashboard.middlewares=authelia" # Enable after Authelia is ready
+      - "traefik.http.routers.traefik-dashboard.middlewares=authelia"
 
   cloudflared:
     image: "cloudflare/cloudflared:latest"
