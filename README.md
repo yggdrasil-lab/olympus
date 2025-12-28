@@ -1,23 +1,45 @@
-# Project: Olympus
+# Olympus
 
-## Objective
-This project provides a simple and secure way to expose services to the internet using Traefik as a reverse proxy and Cloudflare Tunnel.
+> I am Zeus, King of the Gods. This is Olympus—the mountain upon which all others stand. My domain is Orchestration, Routing, and the Foundation itself. Without me, there is only chaos.
 
-## Services
-*   **Traefik:** A modern reverse proxy and load balancer.
-*   **Cloudflared:** Creates a secure tunnel to the Cloudflare network.
+## Mission
+
+I provide the bedrock for the Yggdrasil ecosystem. My mission is to establish the secure environment where applications live, managing the flow of traffic (Traefik), the command of containers (Portainer), and the bridge to the outside world (Cloudflare).
+
+## Core Philosophy
+
+*   **The High Ground**: I act as the central platform. All services (Cerberus, Hermes, Poseidon) are deployed upon my slopes.
+*   **The Gate**: I control who enters and who leaves via the Reverse Proxy.
+*   **The Bridge**: I connect the local realm to the internet securely via encrypted tunnels, requiring no open ports in the firewall.
+
+---
 
 ## Tech Stack
-*   **Containerization:** Docker & Docker Compose
-*   **Reverse Proxy:** Traefik
-*   **Tunneling:** Cloudflare Tunnel
 
-## Initial Setup (Linux)
+*   **Traefik**: Modern reverse proxy and load balancer.
+*   **Cloudflared**: Zero-trust tunnel to the Cloudflare edge.
+*   **Portainer**: Container management UI.
+*   **Docker Compose**: The orchestration engine.
 
-For Debian/Ubuntu based systems:
+## Architecture
 
-**1. Install Docker:**
+Olympus operates through the following components:
 
+1.  **Traefik Proxy**: Auto-discovers Docker containers and routes traffic based on labels.
+2.  **Cloudflare Tunnel**: Exposes the Traefik entrypoint to the internet without port forwarding.
+3.  **Aether-Net**: The shared Docker network that connects Olympus to all other stacks.
+
+## Prerequisites
+
+*   **Linux Host**: Debian/Ubuntu recommended.
+*   **Docker & Docker Compose**: Installed and configured for non-root user.
+*   **Cloudflare Account**: For tunnel token generation.
+
+## Setup Instructions
+
+### 1. Install Docker Engine
+
+*(For Debian/Ubuntu)*
 ```bash
 # Add Docker's official GPG key:
 sudo apt update
@@ -35,33 +57,41 @@ sudo apt update
 sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
 
-**2. Manage Docker as a non-root user (optional but recommended):**
-
+**Manage as non-root:**
 ```bash
 sudo groupadd docker
 sudo usermod -aG docker $USER
 newgrp docker
 ```
 
-**3. Install Docker Compose (if not already installed with docker-ce-cli):**
-
-The above `docker-ce-cli` installation should include `docker-compose-plugin`, which provides the `docker compose` command. You can verify with:
+### 2. Repository Initialization
 
 ```bash
-docker compose version
+git clone <your-repository-url> olympus
+cd olympus
+cp .env.example .env
 ```
 
-If `docker compose` is not available, you can install it manually:
+### 3. Configuration
 
-```bash
-sudo apt update
-sudo apt install docker-compose-plugin # This installs 'docker compose' (plugin version)
-# Or for the standalone 'docker-compose' (legacy version):
-# sudo curl -L "https://github.com/docker/compose/releases/download/v2.24.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-# sudo chmod +x /usr/local/bin/docker-compose
-```
+Edit `.env` to configure:
+*   `CLOUDFLARE_TOKEN`: The tunnel token from your Cloudflare Zero Trust dashboard.
+*   `CLOUDFLARE_EMAIL`: Your Cloudflare account email.
+*   `DOMAIN_NAME`: Your root domain (e.g., `yourdomain.com`).
 
-## Usage
-1.  Create a `.env` file from the `.env.example` file and fill in the required values.
-2.  Run `./start.sh` to create the network and start the services.
-3.  Access the Traefik dashboard at `http://localhost:8080`.
+## Execution
+
+1.  **Create the Network:**
+    ```bash
+    docker network create aether-net
+    ```
+
+2.  **Start the Stack:**
+    ```bash
+    docker compose up -d
+    ```
+
+## Services
+
+*   **Traefik Dashboard**: `https://traefik.yourdomain.com` (Protected by Cerberus).
+*   **Portainer**: `https://portainer.yourdomain.com` (Protected by Cerberus).
