@@ -75,9 +75,10 @@ cp .env.example .env
 ### 3. Configuration
 
 Edit `.env` to configure:
-*   `CLOUDFLARE_TOKEN`: The tunnel token from your Cloudflare Zero Trust dashboard.
+*   `TUNNEL_TOKEN`: The tunnel token from your Cloudflare Zero Trust dashboard.
 *   `CLOUDFLARE_EMAIL`: Your Cloudflare account email.
-*   `DOMAIN_NAME`: Your root domain (e.g., `yourdomain.com`).
+*   `CF_DNS_API_TOKEN`: Your Cloudflare API Token with `Zone:DNS:Edit` permissions.
+*   `CLOUDFLARE_DOMAIN`: Your root domain (e.g., `yourdomain.com`).
 
 ## Execution
 

@@ -29,13 +29,13 @@ services:
       - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
       - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
       # Add Cloudflare DNS Challenge Provider for Let's Encrypt
-      - "--certificatesresolvers.cloudflare.acme.dnschallenge=true"
-      - "--certificatesresolvers.cloudflare.acme.dnschallenge.provider=cloudflare"
       - "--certificatesresolvers.cloudflare.acme.email=${CLOUDFLARE_EMAIL}"
       - "--certificatesresolvers.cloudflare.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesresolvers.cloudflare.acme.dnschallenge.provider=cloudflare"
+      - "--certificatesresolvers.cloudflare.acme.dnschallenge.resolvers=1.1.1.1:53,8.8.8.8:53"
     environment:
       - "CLOUDFLARE_EMAIL=${CLOUDFLARE_EMAIL}"
-      - "CLOUDFLARE_API_KEY=${CLOUDFLARE_API_KEY}"
+      - "CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}"
       - "DOCKER_API_VERSION=1.44"
     networks:
       - aether-net
@@ -48,7 +48,10 @@ services:
       - "traefik.http.routers.traefik-dashboard.rule=Host(`${TRAEFIK_SUBDOMAIN}.${CLOUDFLARE_DOMAIN}`)"
       - "traefik.http.routers.traefik-dashboard.entrypoints=websecure"
       - "traefik.http.routers.traefik-dashboard.service=api@internal"
+      - "traefik.http.routers.traefik-dashboard.tls=true"
       - "traefik.http.routers.traefik-dashboard.tls.certresolver=cloudflare"
+      - "traefik.http.routers.traefik-dashboard.tls.domains[0].main=${CLOUDFLARE_DOMAIN}"
+      - "traefik.http.routers.traefik-dashboard.tls.domains[0].sans=*.${CLOUDFLARE_DOMAIN}"
       - "traefik.http.routers.traefik-dashboard.middlewares=authelia"
 
   cloudflared:
@@ -81,7 +84,10 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.portainer.rule=Host(`${PORTAINER_SUBDOMAIN}.${CLOUDFLARE_DOMAIN}`)"
       - "traefik.http.routers.portainer.entrypoints=websecure"
+      - "traefik.http.routers.portainer.tls=true"
       - "traefik.http.routers.portainer.tls.certresolver=cloudflare"
+      - "traefik.http.routers.portainer.tls.domains[0].main=${CLOUDFLARE_DOMAIN}"
+      - "traefik.http.routers.portainer.tls.domains[0].sans=*.${CLOUDFLARE_DOMAIN}"
       - "traefik.http.services.portainer.loadbalancer.server.port=9000"
       - "traefik.http.routers.portainer.middlewares=authelia"
 
