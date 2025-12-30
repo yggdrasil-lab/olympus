@@ -26,14 +26,22 @@ I provide the bedrock for the Yggdrasil ecosystem. My mission is to establish th
 Olympus operates through the following components:
 
 1.  **Traefik Proxy**: Auto-discovers Docker containers and routes traffic based on labels.
-2.  **Cloudflare Tunnel**: Exposes the Traefik entrypoint to the internet without port forwarding.
+2.  **Cloudflare Tunnel**: Exposes the Traefik entrypoint to the internet without port forwarding (Production only).
 3.  **Aether-Net**: The shared Docker network that connects Olympus to all other stacks.
 
 ## Prerequisites
 
-*   **Linux Host**: Debian/Ubuntu recommended.
+*   **Linux Host**: Debian/Ubuntu recommended (WSL2 for Development).
 *   **Docker & Docker Compose**: Installed and configured for non-root user.
 *   **Cloudflare Account**: For tunnel token generation.
+
+## Configuration Structure
+
+The stack is split to support distinct environments:
+
+*   **`docker-compose.yml`**: Base service definitions (Traefik, Portainer) and routing labels.
+*   **`docker-compose.dev.yml`**: Development overrides. Exposes ports `80` & `443` directly to localhost.
+*   **`docker-compose.prod.yml`**: Production overrides. Adds `cloudflared` for secure tunneling; no ports exposed.
 
 ## Setup Instructions
 
@@ -75,24 +83,30 @@ cp .env.example .env
 ### 3. Configuration
 
 Edit `.env` to configure:
-*   `TUNNEL_TOKEN`: The tunnel token from your Cloudflare Zero Trust dashboard.
+*   `CLOUDFLARE_DOMAIN`: Your root domain (e.g., `dev.yourdomain.com` for dev, `yourdomain.com` for prod).
 *   `CLOUDFLARE_EMAIL`: Your Cloudflare account email.
 *   `CF_DNS_API_TOKEN`: Your Cloudflare API Token with `Zone:DNS:Edit` permissions.
-*   `CLOUDFLARE_DOMAIN`: Your root domain (e.g., `yourdomain.com`).
+*   `TUNNEL_TOKEN`: (Production) The tunnel token from your Cloudflare Zero Trust dashboard.
 
 ## Execution
 
-1.  **Create the Network:**
-    ```bash
-    docker network create aether-net
-    ```
+### Development (Localhost)
+Exposes services on your local ports `80` and `443`.
 
-2.  **Start the Stack:**
-    ```bash
-    docker compose up -d
-    ```
+```bash
+./start_dev.sh
+```
+
+### Production (Tunnel)
+Uses Cloudflare Tunnel. No ports exposed.
+
+```bash
+./start.sh
+```
+
+*Note: In production (e.g., via GitHub Actions), the `.env` file is optional if environment variables are injected directly into the shell.*
 
 ## Services
 
-*   **Traefik Dashboard**: `https://traefik.yourdomain.com` (Protected by Cerberus).
-*   **Portainer**: `https://portainer.yourdomain.com` (Protected by Cerberus).
+*   **Traefik Dashboard**: `https://traefik.${CLOUDFLARE_DOMAIN}` (Protected by Cerberus).
+*   **Portainer**: `https://portainer.${CLOUDFLARE_DOMAIN}` (Protected by Cerberus).
