@@ -10,7 +10,15 @@ I provide the bedrock for the Yggdrasil ecosystem. My mission is to establish th
 
 *   **The High Ground**: I act as the central platform. All services (Cerberus, Hermes, Poseidon) are deployed upon my slopes.
 *   **The Gate**: I control who enters and who leaves via the Reverse Proxy.
-*   **The Bridge**: I connect the local realm to the internet securely via encrypted tunnels, requiring no open ports in the firewall.
+*   **The Bridge**: I connect the local realm to the internet securely via encrypted tunnels, while also allowing direct local access via Split-Horizon DNS (e.g., AdGuard Home).
+
+## Networking & Security
+
+Olympus uses a **Split-Horizon DNS** configuration to ensure seamless access both inside and outside your local network:
+
+1.  **External Access**: Traffic from the internet enters via **Cloudflare Tunnel (`cloudflared`)**. This requires no open ports on your router/firewall.
+2.  **Internal Access**: Traffic from within your LAN is routed directly to the server's static IP via **AdGuard Home** DNS rewrites (e.g., `*.yourdomain.com` -> `192.168.x.x`). 
+3.  **Port Exposure**: Traefik exposes ports `80` and `443` by default to support this direct local access. Ensure your server's host firewall allows inbound traffic on these ports.
 
 ---
 
@@ -39,9 +47,9 @@ Olympus operates through the following components:
 
 The stack is split to support distinct environments:
 
-*   **`docker-compose.yml`**: Base service definitions (Traefik, Portainer) and routing labels.
-*   **`docker-compose.dev.yml`**: Development overrides. Exposes ports `80` & `443` directly to localhost.
-*   **`docker-compose.prod.yml`**: Production overrides. Adds `cloudflared` for secure tunneling; no ports exposed.
+*   **`docker-compose.yml`**: Base service definitions (Traefik, Portainer). Exposes ports `80` & `443` directly to support local access (Split-Horizon DNS).
+*   **`docker-compose.dev.yml`**: Development overrides. Adds port `8080` for the insecure Traefik dashboard.
+*   **`docker-compose.prod.yml`**: Production overrides. Adds `cloudflared` for secure tunneling.
 
 ## Setup Instructions
 
