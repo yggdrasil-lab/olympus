@@ -11,32 +11,26 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
-    ports:
-      - "80:80"   # HTTP
-      - "443:443" # HTTPS
-    command:
-      # Core settings
-      - "--log.level=INFO"
-      - "--api.dashboard=true" # Enable dashboard
-      # Providers
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      # Entrypoints
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.websecure.address=:443"
-      # Global HTTP to HTTPS redirection
-      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
-      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
-      - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
-      # Add Cloudflare DNS Challenge Provider for Let's Encrypt
-      - "--certificatesresolvers.cloudflare.acme.email=${CLOUDFLARE_EMAIL}"
-      - "--certificatesresolvers.cloudflare.acme.storage=/letsencrypt/acme.json"
-      - "--certificatesresolvers.cloudflare.acme.dnschallenge.provider=cloudflare"
-      - "--certificatesresolvers.cloudflare.acme.dnschallenge.resolvers=1.1.1.1:53,8.8.8.8:53"
     environment:
       - "CLOUDFLARE_EMAIL=${CLOUDFLARE_EMAIL}"
       - "CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}"
       - "DOCKER_API_VERSION=1.44"
+      # Static Configuration (Moved from command to Env for proper merging)
+      - "TRAEFIK_LOG_LEVEL=INFO"
+      - "TRAEFIK_API_DASHBOARD=true"
+      - "TRAEFIK_PROVIDERS_DOCKER=true"
+      - "TRAEFIK_PROVIDERS_DOCKER_EXPOSEDBYDEFAULT=false"
+      - "TRAEFIK_ENTRYPOINTS_WEB_ADDRESS=:80"
+      - "TRAEFIK_ENTRYPOINTS_WEBSECURE_ADDRESS=:443"
+      # Global HTTP to HTTPS redirection
+      - "TRAEFIK_ENTRYPOINTS_WEB_HTTP_REDIRECTIONS_ENTRYPOINT_TO=websecure"
+      - "TRAEFIK_ENTRYPOINTS_WEB_HTTP_REDIRECTIONS_ENTRYPOINT_SCHEME=https"
+      - "TRAEFIK_ENTRYPOINTS_WEB_HTTP_REDIRECTIONS_ENTRYPOINT_PERMANENT=true"
+      # Cloudflare Resolver
+      - "TRAEFIK_CERTIFICATESRESOLVERS_CLOUDFLARE_ACME_EMAIL=${CLOUDFLARE_EMAIL}"
+      - "TRAEFIK_CERTIFICATESRESOLVERS_CLOUDFLARE_ACME_STORAGE=/letsencrypt/acme.json"
+      - "TRAEFIK_CERTIFICATESRESOLVERS_CLOUDFLARE_ACME_DNSCHALLENGE_PROVIDER=cloudflare"
+      - "TRAEFIK_CERTIFICATESRESOLVERS_CLOUDFLARE_ACME_DNSCHALLENGE_RESOLVERS=1.1.1.1:53,8.8.8.8:53"
     networks:
       - aether-net
     volumes:
@@ -53,20 +47,6 @@ services:
       - "traefik.http.routers.traefik-dashboard.tls.domains[0].main=${CLOUDFLARE_DOMAIN}"
       - "traefik.http.routers.traefik-dashboard.tls.domains[0].sans=*.${CLOUDFLARE_DOMAIN}"
       - "traefik.http.routers.traefik-dashboard.middlewares=authelia"
-
-  cloudflared:
-    image: "cloudflare/cloudflared:latest"
-    container_name: "cloudflared"
-    restart: unless-stopped
-    depends_on:
-      - traefik
-    environment:
-      - TUNNEL_TOKEN=${TUNNEL_TOKEN}
-    command: tunnel run
-    networks:
-      - aether-net
-    labels:
-      - "traefik.enable=false"
 
   portainer:
     image: portainer/portainer-ce:latest

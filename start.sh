@@ -1,12 +1,15 @@
 #!/bin/bash
+set -e
 
-# Check if the aether-net network exists
-if ! docker network ls | grep -q "aether-net"; then
-  echo "Creating aether-net network..."
-  docker network create aether-net
-else
-  echo "aether-net network already exists."
-fi
+echo "Starting Olympus in Production mode..."
 
-# Start the services
-docker compose up -d --remove-orphans
+# Define network name
+NETWORK_NAME="aether-net"
+
+# Ensure network exists
+docker network inspect "$NETWORK_NAME" >/dev/null 2>&1 || docker network create "$NETWORK_NAME"
+
+# Start the services using base and production files
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --remove-orphans
+
+echo "Production environment deployed successfully."

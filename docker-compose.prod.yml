@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  cloudflared:
+    image: "cloudflare/cloudflared:latest"
+    container_name: "cloudflared"
+    restart: unless-stopped
+    depends_on:
+      - traefik
+    environment:
+      - TUNNEL_TOKEN=${TUNNEL_TOKEN}
+    command: tunnel run
+    networks:
+      - aether-net
+    labels:
+      - "traefik.enable=false"
