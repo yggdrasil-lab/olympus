@@ -7,12 +7,12 @@ services:
     environment:
       - "TRAEFIK_API_INSECURE=true" # Enable insecure API/Dashboard on port 8080
     labels:
-      - "traefik.http.routers.traefik-dashboard.middlewares=" # Disable Authelia
+      # - "traefik.http.routers.traefik-dashboard.middlewares=" # Disable Authelia
       - "traefik.http.routers.traefik-dashboard.tls=true"
 
   portainer:
     ports:
       - "9000:9000"
     labels:
-      - "traefik.http.routers.portainer.middlewares=" # Disable Authelia
+      # - "traefik.http.routers.portainer.middlewares=" # Disable Authelia
       - "traefik.http.routers.portainer.tls=true"
