@@ -39,17 +39,7 @@ services:
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "traefik-data:/letsencrypt" # Persist ACME certificates
-    labels:
-      - "traefik.enable=true"
-      # Dashboard Router
-      - "traefik.http.routers.traefik-dashboard.rule=Host(`${TRAEFIK_SUBDOMAIN}.${CLOUDFLARE_DOMAIN}`)"
-      - "traefik.http.routers.traefik-dashboard.entrypoints=websecure"
-      - "traefik.http.routers.traefik-dashboard.service=api@internal"
-      - "traefik.http.routers.traefik-dashboard.tls=true"
-      - "traefik.http.routers.traefik-dashboard.tls.certresolver=cloudflare"
-      - "traefik.http.routers.traefik-dashboard.tls.domains[0].main=${CLOUDFLARE_DOMAIN}"
-      - "traefik.http.routers.traefik-dashboard.tls.domains[0].sans=*.${CLOUDFLARE_DOMAIN}"
-      - "traefik.http.routers.traefik-dashboard.middlewares=authelia"
+
 
   portainer:
     image: portainer/portainer-ce:latest
@@ -63,16 +53,7 @@ services:
       - portainer_data:/data
     networks:
       - aether-net
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.portainer.rule=Host(`${PORTAINER_SUBDOMAIN}.${CLOUDFLARE_DOMAIN}`)"
-      - "traefik.http.routers.portainer.entrypoints=websecure"
-      - "traefik.http.routers.portainer.tls=true"
-      - "traefik.http.routers.portainer.tls.certresolver=cloudflare"
-      - "traefik.http.routers.portainer.tls.domains[0].main=${CLOUDFLARE_DOMAIN}"
-      - "traefik.http.routers.portainer.tls.domains[0].sans=*.${CLOUDFLARE_DOMAIN}"
-      - "traefik.http.services.portainer.loadbalancer.server.port=9000"
-      - "traefik.http.routers.portainer.middlewares=authelia"
+
 
 volumes:
   traefik-data:
