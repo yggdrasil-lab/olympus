@@ -12,8 +12,14 @@ services:
     security_opt:
       - no-new-privileges:true
     ports:
-      - "80:80"
-      - "443:443"
+      - target: 80
+        published: 80
+        protocol: tcp
+        mode: host
+      - target: 443
+        published: 443
+        protocol: tcp
+        mode: host
     environment:
       - "CLOUDFLARE_EMAIL=${CLOUDFLARE_EMAIL}"
       - "CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}"
