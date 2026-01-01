@@ -13,6 +13,6 @@ docker compose -f docker-compose.yml -f docker-compose.prod.yml down --remove-or
 docker network inspect "$NETWORK_NAME" >/dev/null 2>&1 || docker network create --driver overlay --attachable "$NETWORK_NAME"
 
 # Start the services using docker stack deploy (Swarm Mode)
-docker compose -f docker-compose.yml -f docker-compose.prod.yml config | docker stack deploy -c - olympus
+docker stack deploy -c docker-compose.yml -c docker-compose.prod.yml olympus
 
 echo "Production environment deployed successfully."
