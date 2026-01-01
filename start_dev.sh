@@ -3,6 +3,9 @@ set -e
 
 echo "Starting Olympus in Development mode..."
 
+# Ensure clean state
+docker compose -f docker-compose.yml -f docker-compose.dev.yml down --remove-orphans
+
 # Define network name
 NETWORK_NAME="aether-net"
 
