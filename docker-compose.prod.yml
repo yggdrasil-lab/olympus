@@ -1,11 +1,5 @@
-version: '3.8'
-
 services:
   traefik:
-    environment:
-      - TRAEFIK_PROVIDERS_DOCKER_SWARMMODE=true
-      - TRAEFIK_PROVIDERS_DOCKER_NETWORK=aether-net
-
   cloudflared:
     image: "cloudflare/cloudflared:latest"
     container_name: "cloudflared"
