@@ -50,6 +50,7 @@ services:
       - "traefik.http.routers.traefik-dashboard.tls.domains[0].main=${CLOUDFLARE_DOMAIN}"
       - "traefik.http.routers.traefik-dashboard.tls.domains[0].sans=*.${CLOUDFLARE_DOMAIN}"
       - "traefik.http.routers.traefik-dashboard.middlewares=authelia"
+      - "traefik.http.services.traefik-dashboard.loadbalancer.server.port=8080"
       - "traefik.docker.network=aether-net"
     deploy:
       mode: global
