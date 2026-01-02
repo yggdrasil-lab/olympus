@@ -1,5 +1,5 @@
 services:
-  traefik:
+
   cloudflared:
     image: "cloudflare/cloudflared:latest"
     container_name: "cloudflared"
