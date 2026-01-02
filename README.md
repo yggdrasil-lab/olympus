@@ -27,20 +27,21 @@ Olympus uses a **Split-Horizon DNS** configuration to ensure seamless access bot
 *   **Traefik**: Modern reverse proxy and load balancer.
 *   **Cloudflared**: Zero-trust tunnel to the Cloudflare edge.
 *   **Portainer**: Container management UI.
-*   **Docker Compose**: The orchestration engine.
+*   **Docker Swarm**: The orchestration engine (Production).
+*   **Docker Compose**: The service definition (Development).
 
 ## Architecture
 
 Olympus operates through the following components:
 
-1.  **Traefik Proxy**: Auto-discovers Docker containers and routes traffic based on labels.
+1.  **Traefik Proxy**: Auto-discovers services via the Docker Swarm Orchestrator (Prod) or Docker Socket (Dev).
 2.  **Cloudflare Tunnel**: Exposes the Traefik entrypoint to the internet without port forwarding (Production only).
 3.  **Aether-Net**: The shared Docker network that connects Olympus to all other stacks.
 
 ## Prerequisites
 
 *   **Linux Host**: Debian/Ubuntu recommended (WSL2 for Development).
-*   **Docker & Docker Compose**: Installed and configured for non-root user.
+*   **Docker Engine**: Installed and initialized in Swarm mode (`docker swarm init`).
 *   **Cloudflare Account**: For tunnel token generation.
 
 ## Configuration Structure
@@ -105,12 +106,17 @@ Exposes services on your local ports `80` and `443`.
 ./start_dev.sh
 ```
 
-### Production (Tunnel)
-Uses Cloudflare Tunnel. No ports exposed.
+### Production (Swarm)
+Uses Docker Swarm with Cloudflare Tunnel. Pinned to Manager nodes for security.
 
 ```bash
+# Ensure you have initialized Swarm first:
+# docker swarm init
+
 ./start.sh
 ```
+
+**Note**: This uses `docker stack deploy`. Removed services are automatically pruned (`--prune`).
 
 *Note: In production (e.g., via GitHub Actions), the `.env` file is optional if environment variables are injected directly into the shell.*
 

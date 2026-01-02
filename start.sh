@@ -6,13 +6,10 @@ echo "Starting Olympus in Production mode..."
 # Define network name
 NETWORK_NAME="aether-net"
 
-# Ensure clean state
-docker compose -f docker-compose.yml -f docker-compose.prod.yml down --remove-orphans
-
 # Ensure network exists
 docker network inspect "$NETWORK_NAME" >/dev/null 2>&1 || docker network create --driver overlay --attachable "$NETWORK_NAME"
 
 # Start the services using base and production files
-docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --remove-orphans
+docker stack deploy --prune -c docker-compose.yml -c docker-compose.prod.yml olympus
 
 echo "Production environment deployed successfully."
