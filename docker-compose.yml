@@ -5,7 +5,8 @@ networks:
 services:
   traefik:
     image: "traefik:v2.11"
-    container_name: "traefik"
+    labels:
+      - "com.docker.compose.project=${STACK_NAME}"
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
@@ -60,7 +61,8 @@ services:
 
   portainer:
     image: portainer/portainer-ce:latest
-    container_name: portainer
+    labels:
+      - "com.docker.compose.project=${STACK_NAME}"
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
