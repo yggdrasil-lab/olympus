@@ -12,14 +12,20 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Deploy with start.sh
+      - name: Setup Secrets
         env:
-          TUNNEL_TOKEN: ${{ secrets.TUNNEL_TOKEN }}
-          CLOUDFLARE_DOMAIN: ${{ vars.DOMAIN_NAME }}
-          TRAEFIK_SUBDOMAIN: ${{ vars.TRAEFIK_SUBDOMAIN }}
-          PORTAINER_SUBDOMAIN: ${{ vars.PORTAINER_SUBDOMAIN }}
-          CLOUDFLARE_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
-          CF_DNS_API_TOKEN: ${{ secrets.CF_DNS_API_TOKEN }}
+          CF_DNS_TOKEN: ${{ secrets.CF_DNS_API_TOKEN }}
         run: |
-          chmod +x start.sh
-          ./start.sh
+          chmod +x scripts/ensure_secret.sh
+          echo "OLYMPUS_CF_DNS_API_TOKEN_NAME=$(echo "$CF_DNS_TOKEN" | ./scripts/ensure_secret.sh olympus_cf_dns_api_token)" >> $GITHUB_ENV
+
+      - name: Deploy Stack
+        env:
+          # Environment Config
+          TUNNEL_TOKEN: ${{ secrets.TUNNEL_TOKEN }}
+          CLOUDFLARE_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
+          CLOUDFLARE_DOMAIN: ${{ vars.DOMAIN_NAME }}
+          STACK_NAME: olympus
+        run: |
+          chmod +x scripts/deploy.sh
+          ./scripts/deploy.sh "olympus" docker-compose.yml
