@@ -15,7 +15,7 @@ services:
       - "443:443"
     environment:
       - "CLOUDFLARE_EMAIL=${CLOUDFLARE_EMAIL}"
-      - "CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}"
+      - "CF_DNS_API_TOKEN_FILE=/run/secrets/olympus_cf_dns_api_token"
       - "DOCKER_API_VERSION=1.44"
       # Static Configuration (Moved from command to Env for proper merging)
       - "TRAEFIK_LOG_LEVEL=INFO"
@@ -40,6 +40,9 @@ services:
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "traefik-data:/letsencrypt" # Persist ACME certificates
+    secrets:
+      - source: olympus_cf_dns_api_token
+        target: olympus_cf_dns_api_token
     deploy:
       mode: global
       placement:
@@ -48,7 +51,7 @@ services:
       labels:
         - "traefik.enable=true"
         # Dashboard Router
-        - "traefik.http.routers.traefik-dashboard.rule=Host(`${TRAEFIK_SUBDOMAIN}.${CLOUDFLARE_DOMAIN}`)"
+        - "traefik.http.routers.traefik-dashboard.rule=Host(`traefik.${CLOUDFLARE_DOMAIN}`)"
         - "traefik.http.routers.traefik-dashboard.entrypoints=websecure"
         - "traefik.http.routers.traefik-dashboard.service=api@internal"
         - "traefik.http.routers.traefik-dashboard.tls=true"
@@ -58,6 +61,27 @@ services:
         - "traefik.http.routers.traefik-dashboard.middlewares=authelia"
         - "traefik.http.services.traefik-dashboard.loadbalancer.server.port=8080"
         - "traefik.docker.network=aether-net"
+
+  cloudflared:
+    image: "cloudflare/cloudflared:latest"
+    labels:
+      - "com.docker.compose.project=${STACK_NAME}"
+    restart: unless-stopped
+    depends_on:
+      - traefik
+    environment:
+      - TUNNEL_TOKEN=${TUNNEL_TOKEN}
+    command: tunnel run
+    networks:
+      - aether-net
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      labels:
+        - "traefik.enable=false"
 
   portainer:
     image: portainer/portainer-ce:latest
@@ -80,7 +104,7 @@ services:
           - node.role == manager
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.portainer.rule=Host(`${PORTAINER_SUBDOMAIN}.${CLOUDFLARE_DOMAIN}`)"
+        - "traefik.http.routers.portainer.rule=Host(`portainer.${CLOUDFLARE_DOMAIN}`)"
         - "traefik.http.routers.portainer.entrypoints=websecure"
         - "traefik.http.routers.portainer.tls=true"
         - "traefik.http.routers.portainer.tls.certresolver=cloudflare"
@@ -92,3 +116,8 @@ services:
 volumes:
   traefik-data:
   portainer_data:
+
+secrets:
+  olympus_cf_dns_api_token:
+    external: true
+    name: ${OLYMPUS_CF_DNS_API_TOKEN_NAME}

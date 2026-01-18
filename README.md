@@ -46,11 +46,10 @@ Olympus operates through the following components:
 
 ## Configuration Structure
 
-The stack is split to support distinct environments:
-
-*   **`docker-compose.yml`**: Base service definitions (Traefik, Portainer). Exposes ports `80` & `443` directly to support local access (Split-Horizon DNS).
-*   **`docker-compose.dev.yml`**: Development overrides. Adds port `8080` for the insecure Traefik dashboard.
-*   **`docker-compose.prod.yml`**: Production overrides. Adds `cloudflared` for secure tunneling.
+The stack is consolidated into a single Source of Truth:
+*   **`docker-compose.yml`**: Defines the complete Olympus stack (Traefik, Portainer, Cloudflared).
+    *   **External Access:** Via `cloudflared` (Tunnel).
+    *   **Internal Access:** Via Traefik ports `80` & `443` (Split-Horizon DNS).
 
 ## Setup Instructions
 
@@ -99,24 +98,20 @@ Edit `.env` to configure:
 
 ## Execution
 
-### Development (Localhost)
-Exposes services on your local ports `80` and `443`.
+### Deployment (Standard)
+Deployments are handled via the unified `ops-scripts` workflow.
 
 ```bash
-./start_dev.sh
+# Initialize submodules first
+git submodule update --init --recursive
+
+# Deploy stack
+./scripts/deploy.sh olympus
 ```
 
-### Production (Swarm)
-Uses Docker Swarm with Cloudflare Tunnel. Pinned to Manager nodes for security.
+**Note**: This uses `docker stack deploy` under the hood. It automatically handles secret generation (`ensure_secret.sh`) for sensitive variables.
 
-```bash
-# Ensure you have initialized Swarm first:
-# docker swarm init
 
-./start.sh
-```
-
-**Note**: This uses `docker stack deploy`. Removed services are automatically pruned (`--prune`).
 
 *Note: In production (e.g., via GitHub Actions), the `.env` file is optional if environment variables are injected directly into the shell.*
 
