@@ -41,7 +41,7 @@ Olympus operates through the following components:
 ## Prerequisites
 
 *   **Linux Host**: Debian/Ubuntu recommended (WSL2 for Development).
-*   **Docker Engine**: Installed and initialized in Swarm mode (`docker swarm init`).
+*   **Docker Engine**: Installed and initialized (see `Forge/yggdrasil-os`).
 *   **Cloudflare Account**: For tunnel token generation.
 
 ## Configuration Structure
