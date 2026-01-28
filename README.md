@@ -100,3 +100,21 @@ git submodule update --init --recursive
 
 *   **Traefik Dashboard**: `https://traefik.${CLOUDFLARE_DOMAIN}` (Protected by Cerberus).
 *   **Portainer**: `https://portainer.${CLOUDFLARE_DOMAIN}` (Protected by Cerberus).
+
+## OIDC Configuration (Portainer)
+
+To enable Single Sign-On via Authelia:
+
+1.  **Authentication:** Go to Settings -> Authentication -> OAuth.
+2.  **Use SSO:** Toggle `ON`.
+3.  **Hide Internal Authentication:** Toggle `ON` (Optional, once tested).
+4.  **Automatic User Provisioning:** Toggle `ON` (Required for new users).
+5.  **Configuration:**
+    *   **Client ID:** `portainer`
+    *   **Client Secret:** (Retrieve from Vaultwarden)
+    *   **Authorization URL:** `https://auth.example.com/api/oidc/authorization`
+    *   **Access Token URL:** `https://auth.example.com/api/oidc/token`
+    *   **Resource URL:** `https://auth.example.com/api/oidc/userinfo`
+    *   **Redirect URL:** `https://portainer.example.com/` (Must match Authelia config exactly)
+    *   **User Identifier:** `preferred_username` or `email`
+    *   **Scopes:** `openid profile email groups`
