@@ -41,7 +41,7 @@ Olympus operates through the following components:
 ## Prerequisites
 
 *   **Linux Host**: Debian/Ubuntu recommended (WSL2 for Development).
-*   **Docker Engine**: Installed and initialized in Swarm mode (`docker swarm init`).
+*   **Docker Engine**: Installed and initialized (see `Forge/yggdrasil-os`).
 *   **Cloudflare Account**: For tunnel token generation.
 
 ## Configuration Structure
@@ -54,30 +54,11 @@ The stack is consolidated into a single Source of Truth:
 ## Setup Instructions
 
 ### 1. Install Docker Engine
+Refer to **[[Project - Yggdrasil OS]]** or run the centralized installer:
 
-*(For Debian/Ubuntu)*
 ```bash
-# Add Docker's official GPG key:
-sudo apt update
-sudo apt install ca-certificates curl
-sudo install -m 0755 -d /etc/apt/keyrings
-sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-sudo chmod a+r /etc/apt/keyrings/docker.asc
-
-# Add the repository to Apt sources:
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-sudo apt update
-sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-```
-
-**Manage as non-root:**
-```bash
-sudo groupadd docker
-sudo usermod -aG docker $USER
-newgrp docker
+# From Yggdrasil OS repository
+sudo ./docker/install_docker.sh
 ```
 
 ### 2. Repository Initialization
@@ -119,3 +100,21 @@ git submodule update --init --recursive
 
 *   **Traefik Dashboard**: `https://traefik.${CLOUDFLARE_DOMAIN}` (Protected by Cerberus).
 *   **Portainer**: `https://portainer.${CLOUDFLARE_DOMAIN}` (Protected by Cerberus).
+
+## OIDC Configuration (Portainer)
+
+To enable Single Sign-On via Authelia:
+
+1.  **Authentication:** Go to Settings -> Authentication -> OAuth.
+2.  **Use SSO:** Toggle `ON`.
+3.  **Hide Internal Authentication:** Toggle `ON` (Optional, once tested).
+4.  **Automatic User Provisioning:** Toggle `ON` (Required for new users).
+5.  **Configuration:**
+    *   **Client ID:** `portainer`
+    *   **Client Secret:** (Retrieve from Vaultwarden)
+    *   **Authorization URL:** `https://auth.example.com/api/oidc/authorization`
+    *   **Access Token URL:** `https://auth.example.com/api/oidc/token`
+    *   **Resource URL:** `https://auth.example.com/api/oidc/userinfo`
+    *   **Redirect URL:** `https://portainer.example.com/` (Must match Authelia config exactly)
+    *   **User Identifier:** `preferred_username` or `email`
+    *   **Scopes:** `openid profile email groups`

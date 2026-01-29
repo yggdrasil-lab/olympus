@@ -111,7 +111,6 @@ services:
         - "traefik.http.routers.portainer.tls.domains[0].main=${CLOUDFLARE_DOMAIN}"
         - "traefik.http.routers.portainer.tls.domains[0].sans=*.${CLOUDFLARE_DOMAIN}"
         - "traefik.http.services.portainer.loadbalancer.server.port=9000"
-        - "traefik.http.routers.portainer.middlewares=authelia"
 
 volumes:
   traefik-data:
