@@ -24,9 +24,10 @@ Olympus uses a **Split-Horizon DNS** configuration to ensure seamless access bot
 
 ## Tech Stack
 
-*   **Traefik**: Modern reverse proxy and load balancer.
+*   **Traefik**: Modern reverse proxy and load balancer (The Gate).
 *   **Cloudflared**: Zero-trust tunnel to the Cloudflare edge.
-*   **Portainer**: Container management UI.
+*   **Portainer**: Container management UI (The Throne) + **Agents** (The Eyes).
+*   **Watchtower**: Automated container updates (The Guardian).
 *   **Docker Swarm**: The orchestration engine (Production).
 *   **Docker Compose**: The service definition (Development).
 
@@ -34,9 +35,13 @@ Olympus uses a **Split-Horizon DNS** configuration to ensure seamless access bot
 
 Olympus operates through the following components:
 
-1.  **Traefik Proxy**: Auto-discovers services via the Docker Swarm Orchestrator (Prod) or Docker Socket (Dev).
-2.  **Cloudflare Tunnel**: Exposes the Traefik entrypoint to the internet without port forwarding (Production only).
-3.  **Aether-Net**: The shared Docker network that connects Olympus to all other stacks.
+1.  **Traefik Proxy**: Auto-discovers services via the Docker Swarm Orchestrator.
+2.  **Portainer Stack**:
+    *   **Manager**: Centralized dashboard on the Leader node.
+    *   **Agent**: Global deployment on all nodes for cluster-wide visibility.
+3.  **Watchtower**: Automated daily updates for all containers (Managers & Workers).
+4.  **Cloudflare Tunnel**: Exposes the Traefik entrypoint to the internet without port forwarding.
+5.  **Aether-Net**: The shared Docker network that connects Olympus to all other stacks.
 
 ## Prerequisites
 
