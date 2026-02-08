@@ -114,6 +114,8 @@ services:
 
   portainer-agent:
     image: portainer/agent:latest
+    labels:
+      - "com.docker.compose.project=${STACK_NAME}"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/lib/docker/volumes:/var/lib/docker/volumes
@@ -129,11 +131,14 @@ services:
 
   watchtower:
     image: containrrr/watchtower
+    labels:
+      - "com.docker.compose.project=${STACK_NAME}"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - WATCHTOWER_CLEANUP=true
       - WATCHTOWER_SCHEDULE=0 0 4 * * *  # 4 AM Daily (Cron Syntax)
+      - DOCKER_API_VERSION=1.44 # Force compatible API version
       - TZ=Pacific/Auckland
     deploy:
       mode: replicated
