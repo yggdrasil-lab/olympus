@@ -140,6 +140,8 @@ services:
       - WATCHTOWER_SCHEDULE=0 0 4 * * *  # 4 AM Daily (Cron Syntax)
       - DOCKER_API_VERSION=1.44 # Force compatible API version
       - TZ=Pacific/Auckland
+    networks:
+      - aether-net
     deploy:
       mode: replicated
       replicas: 1
