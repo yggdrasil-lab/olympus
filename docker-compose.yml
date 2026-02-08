@@ -112,6 +112,36 @@ services:
         - "traefik.http.routers.portainer.tls.domains[0].sans=*.${CLOUDFLARE_DOMAIN}"
         - "traefik.http.services.portainer.loadbalancer.server.port=9000"
 
+  portainer-agent:
+    image: portainer/agent:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
+    networks:
+      - aether-net
+    deploy:
+      mode: global
+      placement:
+        constraints:
+          - node.platform.os == linux
+      labels:
+          - "traefik.enable=false"
+
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_SCHEDULE=0 0 4 * * *  # 4 AM Daily (Cron Syntax)
+      - TZ=Pacific/Auckland
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+
 volumes:
   traefik-data:
   portainer_data:
