@@ -1,0 +1,15 @@
+title: "Yggdrasil Dashboard"
+favicon: "https://gethomepage.dev/apple-touch-icon.png"
+theme: dark
+color: slate
+
+layout:
+  Apollo:
+    style: row
+    columns: 4
+  Cerberus:
+    style: row
+    columns: 2
+  Management:
+    style: row
+    columns: 2
