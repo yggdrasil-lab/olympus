@@ -138,7 +138,7 @@ deploy:
     - "homepage.widget.key={{HOMEPAGE_VAR_SONARR_API_KEY}}"
 ```
 
-*Note: For API keys, define them in the stack's `.env` file or Swarm secrets to prevent hardcoding them in the repository.*
+*Note: For API keys, define them in your environment's **GitHub Secrets** rather than a local `.env` file, so the deployment pipeline securely injects them into the server shell during deployment.*
 
 ### Adding External Services (Wait, TrueNAS, Routers)
 To add hardware or services that are **not** running within the Docker Swarm (like your physical TrueNAS array or OPNSense router), you must define them manually in the Swarm configuration file.
