@@ -134,7 +134,7 @@ deploy:
   labels:
     # Existing labels...
     - "homepage.widget.type=sonarr"
-    - "homepage.widget.url=http://sonarr:8989" # Internal DNS via Swarm Network
+    - "homepage.widget.url=http://${STACK_NAME}_sonarr:8989" # Internal DNS via Swarm Network
     - "homepage.widget.key=$SONARR_API_KEY"
 ```
 
