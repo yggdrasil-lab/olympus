@@ -177,8 +177,8 @@ services:
       - source: homepage_docker
         target: /app/config/docker.yaml
     environment:
-      - PUID=1000
-      - PGID=1000
+      - PUID=0
+      - PGID=0
       - HOMEPAGE_ALLOWED_HOSTS=zeus.${CLOUDFLARE_DOMAIN}
     networks:
       - aether-net
