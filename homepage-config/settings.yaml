@@ -13,3 +13,8 @@ layout:
   Management:
     style: row
     columns: 2
+
+# Expose Docker socket data and enable auto-discovery
+docker:
+  my-swarm:
+    socket: /var/run/docker.sock
