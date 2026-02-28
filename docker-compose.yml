@@ -165,6 +165,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
+      - HOMEPAGE_ALLOWED_HOSTS=zeus.${CLOUDFLARE_DOMAIN}
     networks:
       - aether-net
     deploy:
