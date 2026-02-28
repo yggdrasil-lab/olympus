@@ -1,3 +1,4 @@
 ---
 my-swarm:
   socket: /var/run/docker.sock
+  isSwarm: true
