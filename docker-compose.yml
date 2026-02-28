@@ -180,6 +180,8 @@ services:
       - PUID=0
       - PGID=0
       - HOMEPAGE_ALLOWED_HOSTS=zeus.${CLOUDFLARE_DOMAIN}
+      - HOMEPAGE_VAR_SONARR_API_KEY=${SONARR_API_KEY}
+      - HOMEPAGE_VAR_RADARR_API_KEY=${RADARR_API_KEY}
     networks:
       - aether-net
     deploy:
