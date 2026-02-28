@@ -135,7 +135,7 @@ deploy:
     # Existing labels...
     - "homepage.widget.type=sonarr"
     - "homepage.widget.url=http://tasks.${STACK_NAME}_sonarr:8989" # Internal DNS via Swarm Network
-    - "homepage.widget.key=$SONARR_API_KEY"
+    - "homepage.widget.key={{HOMEPAGE_VAR_SONARR_API_KEY}}"
 ```
 
 *Note: For API keys, define them in the stack's `.env` file or Swarm secrets to prevent hardcoding them in the repository.*
