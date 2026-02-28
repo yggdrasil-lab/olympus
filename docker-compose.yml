@@ -149,9 +149,50 @@ services:
         constraints:
           - node.role == manager
 
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    labels:
+      - "com.docker.compose.project=${STACK_NAME}"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    configs:
+      - source: homepage_settings
+        target: /app/config/settings.yaml
+      - source: homepage_services
+        target: /app/config/services.yaml
+      - source: homepage_widgets
+        target: /app/config/widgets.yaml
+    environment:
+      - PUID=1000
+      - PGID=1000
+    networks:
+      - aether-net
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.homepage.rule=Host(`zeus.${CLOUDFLARE_DOMAIN}`)"
+        - "traefik.http.routers.homepage.entrypoints=websecure"
+        - "traefik.http.routers.homepage.tls=true"
+        - "traefik.http.routers.homepage.tls.certresolver=cloudflare"
+        - "traefik.http.routers.homepage.middlewares=authelia"
+        - "traefik.http.services.homepage.loadbalancer.server.port=3000"
+
 volumes:
   traefik-data:
   portainer_data:
+
+configs:
+  homepage_settings:
+    file: ./homepage-config/settings.yaml
+  homepage_services:
+    file: ./homepage-config/services.yaml
+  homepage_widgets:
+    file: ./homepage-config/widgets.yaml
 
 secrets:
   olympus_cf_dns_api_token:
