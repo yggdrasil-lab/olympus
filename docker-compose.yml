@@ -61,6 +61,12 @@ services:
         - "traefik.http.routers.traefik-dashboard.middlewares=authelia"
         - "traefik.http.services.traefik-dashboard.loadbalancer.server.port=8080"
         - "traefik.docker.network=aether-net"
+        # --- HOMEPAGE LABELS ---
+        - "homepage.group=Management"
+        - "homepage.name=Traefik"
+        - "homepage.icon=traefik.png"
+        - "homepage.href=https://traefik.${CLOUDFLARE_DOMAIN}"
+        - "homepage.description=Reverse Proxy"
 
   cloudflared:
     image: "cloudflare/cloudflared:latest"
@@ -111,6 +117,12 @@ services:
         - "traefik.http.routers.portainer.tls.domains[0].main=${CLOUDFLARE_DOMAIN}"
         - "traefik.http.routers.portainer.tls.domains[0].sans=*.${CLOUDFLARE_DOMAIN}"
         - "traefik.http.services.portainer.loadbalancer.server.port=9000"
+        # --- HOMEPAGE LABELS ---
+        - "homepage.group=Management"
+        - "homepage.name=Portainer"
+        - "homepage.icon=portainer.png"
+        - "homepage.href=https://portainer.${CLOUDFLARE_DOMAIN}"
+        - "homepage.description=Container Management"
 
   portainer-agent:
     image: portainer/agent:latest
@@ -179,7 +191,6 @@ services:
         - "traefik.http.routers.homepage.rule=Host(`zeus.${CLOUDFLARE_DOMAIN}`)"
         - "traefik.http.routers.homepage.entrypoints=websecure"
         - "traefik.http.routers.homepage.tls=true"
-        - "traefik.http.routers.homepage.tls.certresolver=cloudflare"
         - "traefik.http.routers.homepage.middlewares=authelia"
         - "traefik.http.services.homepage.loadbalancer.server.port=3000"
 
