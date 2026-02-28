@@ -26,6 +26,7 @@ Olympus uses a **Split-Horizon DNS** configuration to ensure seamless access bot
 
 *   **Traefik**: Modern reverse proxy and load balancer (The Gate).
 *   **Cloudflared**: Zero-trust tunnel to the Cloudflare edge.
+*   **Homepage**: The unified dashboard for the Yggdrasil ecosystem (The Map).
 *   **Portainer**: Container management UI (The Throne) + **Agents** (The Eyes).
 *   **Watchtower**: Automated container updates (The Guardian).
 *   **Docker Swarm**: The orchestration engine (Production).
@@ -105,6 +106,54 @@ git submodule update --init --recursive
 
 *   **Traefik Dashboard**: `https://traefik.${CLOUDFLARE_DOMAIN}` (Protected by Cerberus).
 *   **Portainer**: `https://portainer.${CLOUDFLARE_DOMAIN}` (Protected by Cerberus).
+*   **Homepage Dashboard**: `https://zeus.${CLOUDFLARE_DOMAIN}` (Entrypoint to the Forge).
+
+## Homepage Configuration
+
+Homepage is configured to automatically discover containers in the Docker Swarm environment by polling the Docker Socket. Modifying `services.yaml` is generally not needed for internal apps.
+
+### Adding Docker Services (Swarm Mode)
+To add a new service to Homepage, attach the following **Docker Labels** to the service's `deploy.labels` block in its respective `docker-compose.yml` file:
+
+```yaml
+deploy:
+  labels:
+    # Essential Homepage Labels
+    - "homepage.group=Group Name" # e.g. Apollo, Cerberus, Management
+    - "homepage.name=Service Name" # e.g. Portainer
+    - "homepage.icon=icon-name.png" # Built-in homepage icon
+    - "homepage.href=https://subdomain.${DOMAIN_NAME}"
+    - "homepage.description=A brief description of the app"
+```
+
+### Adding API Widgets (e.g. Sonarr, Radarr, Proxmox)
+Homepage supports live data API widgets (e.g., showing missing episodes from Sonarr). Add the widget variables directly below the standard labels in the compose file:
+
+```yaml
+deploy:
+  labels:
+    # Existing labels...
+    - "homepage.widget.type=sonarr"
+    - "homepage.widget.url=http://tasks.${STACK_NAME}_sonarr:8989" # Internal DNS via Swarm Network
+    - "homepage.widget.key=$SONARR_API_KEY"
+```
+
+*Note: For API keys, define them in the stack's `.env` file or Swarm secrets to prevent hardcoding them in the repository.*
+
+### Adding External Services (Wait, TrueNAS, Routers)
+To add hardware or services that are **not** running within the Docker Swarm (like your physical TrueNAS array or OPNSense router), you must define them manually in the Swarm configuration file.
+Modify `homepage-config/services.yaml` in this repository:
+
+```yaml
+---
+- Apollo: []
+- Cerberus: []
+- Management:
+    - OPNSense:
+        icon: opnsense.png
+        href: https://192.168.1.1
+        description: Primary Router
+```
 
 ## OIDC Configuration (Portainer)
 
