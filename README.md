@@ -155,6 +155,20 @@ Modify `homepage-config/services.yaml` in this repository:
         description: Primary Router
 ```
 
+## Portainer Environment Setup
+
+On a new deployment (or after data storage wipes), Portainer requires you to define your admin credentials and configure the environment to manage the cluster:
+
+1. **Admin Setup Timeout:** Complete the initial setup (creating the administrator username and password) within **5 minutes** of service startup. If it times out, restart the service to reset the security timer:
+   ```bash
+   docker service update --force olympus_portainer
+   ```
+2. **Environment Wizard Configuration:**
+   * When prompted to configure your environment, select **Docker Swarm** (or **Docker** -> **Agent**).
+   * **Name:** `Gaia-Cluster` (or your preferred name).
+   * **Agent Address:** `tasks.portainer-agent:9001`
+   * Click **Connect**.
+
 ## OIDC Configuration (Portainer)
 
 To enable Single Sign-On via Authelia:
