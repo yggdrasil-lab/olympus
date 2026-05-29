@@ -4,19 +4,16 @@ I am Zeus, King of the Gods. This is Olympus — the mountain upon which all oth
 
 ## Architecture
 
-```
-                    Internet
-                       │
-                  Cloudflare Edge
-                       │
-              Cloudflare Tunnel
-                       │
-                  Traefik (:80/:443)
-                       │
-          ┌─────────aether-net─────────┐
-          │        │        │          │
-      Portainer  Homepage  Watchtower  All other stacks
-      (portainer-agent on every node)
+```mermaid
+graph TD
+    Internet((Internet)) --> CF[Cloudflare Edge]
+    CF --> Tunnel[Cloudflare Tunnel]
+    Tunnel --> Traefik[Traefik :80/:443]
+    Traefik --> Net{aether-net}
+    Net --> Portainer[Portainer]
+    Net --> Homepage[Homepage]
+    Net --> Watchtower[Watchtower]
+    Net --> Other[All Other Stacks]
 ```
 
 Olympus provides the network ingress, management, and dashboard for the Yggdrasil ecosystem. All other stacks (Cerberus, Hermes, Poseidon, etc.) connect through the shared `aether-net` overlay network and are exposed via Traefik.
