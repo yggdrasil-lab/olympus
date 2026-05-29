@@ -28,6 +28,10 @@ jobs:
           CLOUDFLARE_DOMAIN: ${{ vars.DOMAIN_NAME }}
           SONARR_API_KEY: ${{ secrets.SONARR_API_KEY }}
           RADARR_API_KEY: ${{ secrets.RADARR_API_KEY }}
+          JELLYFIN_API_KEY: ${{ secrets.JELLYFIN_API_KEY }}
+          LIDARR_API_KEY: ${{ secrets.LIDARR_API_KEY }}
+          AUDIOBOOKSHELF_API_KEY: ${{ secrets.AUDIOBOOKSHELF_API_KEY }}
+          SEERR_API_KEY: ${{ secrets.SEERR_API_KEY }}
           STACK_NAME: olympus
         run: |
           chmod +x scripts/deploy.sh
