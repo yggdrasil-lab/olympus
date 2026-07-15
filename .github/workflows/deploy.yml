@@ -32,6 +32,7 @@ jobs:
           LIDARR_API_KEY: ${{ secrets.LIDARR_API_KEY }}
           AUDIOBOOKSHELF_API_KEY: ${{ secrets.AUDIOBOOKSHELF_API_KEY }}
           SEERR_API_KEY: ${{ secrets.SEERR_API_KEY }}
+          JELLYSTAT_API_KEY: ${{ secrets.JELLYSTAT_API_KEY }}
           STACK_NAME: olympus
         run: |
           chmod +x scripts/deploy.sh
