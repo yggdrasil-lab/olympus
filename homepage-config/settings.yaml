@@ -4,12 +4,18 @@ theme: dark
 color: slate
 
 layout:
-  Apollo:
+  Media Server:
+    style: row
+    columns: 3
+  Media Automation:
+    style: row
+    columns: 3
+  Identity:
+    style: row
+    columns: 3
+  Infrastructure:
+    style: row
+    columns: 2
+  AI Lab:
     style: row
     columns: 4
-  Cerberus:
-    style: row
-    columns: 2
-  Management:
-    style: row
-    columns: 2

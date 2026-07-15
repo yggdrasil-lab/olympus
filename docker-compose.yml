@@ -62,7 +62,7 @@ services:
         - "traefik.http.services.traefik-dashboard.loadbalancer.server.port=8080"
         - "traefik.docker.network=aether-net"
         # --- HOMEPAGE LABELS ---
-        - "homepage.group=Management"
+        - "homepage.group=Infrastructure"
         - "homepage.name=Traefik"
         - "homepage.icon=traefik.png"
         - "homepage.href=https://traefik.${CLOUDFLARE_DOMAIN}"
@@ -118,7 +118,7 @@ services:
         - "traefik.http.routers.portainer.tls.domains[0].sans=*.${CLOUDFLARE_DOMAIN}"
         - "traefik.http.services.portainer.loadbalancer.server.port=9000"
         # --- HOMEPAGE LABELS ---
-        - "homepage.group=Management"
+        - "homepage.group=Infrastructure"
         - "homepage.name=Portainer"
         - "homepage.icon=portainer.png"
         - "homepage.href=https://portainer.${CLOUDFLARE_DOMAIN}"
