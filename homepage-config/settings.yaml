@@ -13,6 +13,9 @@ layout:
   Identity:
     style: row
     columns: 3
-  Management:
+  Infrastructure:
     style: row
     columns: 2
+  Odin:
+    style: row
+    columns: 4
