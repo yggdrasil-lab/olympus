@@ -33,7 +33,8 @@ jobs:
           AUDIOBOOKSHELF_API_KEY: ${{ secrets.AUDIOBOOKSHELF_API_KEY }}
           SEERR_API_KEY: ${{ secrets.SEERR_API_KEY }}
           JELLYSTAT_API_KEY: ${{ secrets.JELLYSTAT_API_KEY }}
-          KOMGA_API_KEY: ${{ secrets.KOMGA_API_KEY }}
+          KOMGA_USERNAME: ${{ secrets.KOMGA_USERNAME }}
+          KOMGA_PASSWORD: ${{ secrets.KOMGA_PASSWORD }}
           STACK_NAME: olympus
         run: |
           chmod +x scripts/deploy.sh
