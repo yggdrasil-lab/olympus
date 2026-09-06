@@ -7,6 +7,9 @@ layout:
   Media Server:
     style: row
     columns: 3
+  Manga:
+    style: row
+    columns: 2
   Media Automation:
     style: row
     columns: 3
