@@ -65,6 +65,6 @@ Non-Docker services (OPNSense, TrueNAS) go in `homepage-config/services.yaml`.
 
 - `docker-compose.yml` — Complete stack definition (single source of truth)
 - `homepage-config/` — Homepage dashboard configs (settings, services, widgets, docker discovery)
-- `scripts/` — Shared `ops-scripts` submodule (`deploy.sh`, `ensure_secret.sh`, `prune_secrets.sh`)
+- Deployments use centralized scripts (`deploy.sh`, `ensure_secret.sh`) fetched directly from `yggdrasil-os` via GitHub raw URLs (no git submodules).
 
 Full operational documentation: `Areas/90-Infrastructure/Olympus/Olympus Stack.md` in the vault.
