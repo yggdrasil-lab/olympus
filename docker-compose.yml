@@ -48,6 +48,11 @@ services:
       placement:
         constraints:
           - node.role == manager
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 128M
       labels:
         - "traefik.enable=true"
         # Dashboard Router
@@ -86,80 +91,13 @@ services:
       placement:
         constraints:
           - node.role == manager
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 64M
       labels:
         - "traefik.enable=false"
-
-  portainer:
-    image: portainer/portainer-ce:latest
-    labels:
-      - "com.docker.compose.project=${STACK_NAME}"
-    restart: unless-stopped
-    security_opt:
-      - no-new-privileges:true
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - portainer_data:/data
-    networks:
-      - aether-net
-    deploy:
-      mode: replicated
-      replicas: 1
-      placement:
-        constraints:
-          - node.role == manager
-      labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.portainer.rule=Host(`portainer.${CLOUDFLARE_DOMAIN}`)"
-        - "traefik.http.routers.portainer.entrypoints=websecure"
-        - "traefik.http.routers.portainer.tls=true"
-        - "traefik.http.routers.portainer.tls.certresolver=cloudflare"
-        - "traefik.http.routers.portainer.tls.domains[0].main=${CLOUDFLARE_DOMAIN}"
-        - "traefik.http.routers.portainer.tls.domains[0].sans=*.${CLOUDFLARE_DOMAIN}"
-        - "traefik.http.services.portainer.loadbalancer.server.port=9000"
-        # --- HOMEPAGE LABELS ---
-        - "homepage.group=Infrastructure"
-        - "homepage.name=Portainer"
-        - "homepage.icon=portainer.png"
-        - "homepage.href=https://portainer.${CLOUDFLARE_DOMAIN}"
-        - "homepage.description=Container Management"
-
-  portainer-agent:
-    image: portainer/agent:latest
-    labels:
-      - "com.docker.compose.project=${STACK_NAME}"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /var/lib/docker/volumes:/var/lib/docker/volumes
-    networks:
-      - aether-net
-    deploy:
-      mode: global
-      placement:
-        constraints:
-          - node.platform.os == linux
-      labels:
-          - "traefik.enable=false"
-
-  watchtower:
-    image: containrrr/watchtower
-    labels:
-      - "com.docker.compose.project=${STACK_NAME}"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      - WATCHTOWER_CLEANUP=true
-      - WATCHTOWER_SCHEDULE=0 0 4 * * *  # 4 AM Daily (Cron Syntax)
-      - DOCKER_API_VERSION=1.44 # Force compatible API version
-      - TZ=Pacific/Auckland
-    networks:
-      - aether-net
-    deploy:
-      mode: replicated
-      replicas: 1
-      placement:
-        constraints:
-          - node.role == manager
 
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
@@ -177,8 +115,8 @@ services:
       - source: homepage_docker
         target: /app/config/docker.yaml
     environment:
-      - PUID=0
-      - PGID=0
+      - PUID=1000
+      - PGID=1000
       - HOMEPAGE_ALLOWED_HOSTS=zeus.${CLOUDFLARE_DOMAIN}
       - HOMEPAGE_VAR_SONARR_API_KEY=${SONARR_API_KEY}
       - HOMEPAGE_VAR_RADARR_API_KEY=${RADARR_API_KEY}
@@ -196,6 +134,11 @@ services:
       placement:
         constraints:
           - node.role == manager
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 64M
       labels:
         - "traefik.enable=true"
         - "traefik.http.routers.homepage.rule=Host(`zeus.${CLOUDFLARE_DOMAIN}`)"
@@ -209,7 +152,6 @@ services:
     ports:
       - "53:53/tcp"
       - "53:53/udp"
-      - "3000:3000/tcp" # Initial setup
       - "853:853/tcp"  # DNS-over-TLS
       - "784:784/udp"  # DNS-over-QUIC
     volumes:
@@ -225,6 +167,11 @@ services:
       placement:
         constraints:
           - node.role == manager
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 64M
       labels:
         - "traefik.enable=true"
         - "traefik.http.routers.adguard.rule=Host(`adguard.${CLOUDFLARE_DOMAIN}`)"
@@ -244,7 +191,6 @@ services:
 
 volumes:
   traefik-data:
-  portainer_data:
 
 configs:
   homepage_settings:
