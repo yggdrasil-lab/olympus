@@ -34,7 +34,7 @@
     - Muspelheim:
         icon: debian.png
         href: https://grafana.tienzo.net
-        description: Worker Node (192.168.86.167)
+        description: Worker Node (192.168.86.185)
         widget:
           type: prometheusmetric
           url: http://argus_prometheus:9090
