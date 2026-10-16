@@ -6,7 +6,7 @@
         description: Manager Node (192.168.86.166)
         widget:
           type: prometheusmetric
-          url: http://argus_prometheus:9090
+          url: http://tasks.argus_prometheus:9090
           refreshInterval: 10000
           metrics:
             - label: CPU
@@ -37,7 +37,7 @@
         description: Worker Node (192.168.86.185)
         widget:
           type: prometheusmetric
-          url: http://argus_prometheus:9090
+          url: http://tasks.argus_prometheus:9090
           refreshInterval: 10000
           metrics:
             - label: CPU
