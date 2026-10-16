@@ -5,20 +5,34 @@ color: slate
 
 layout:
   Media Server:
+    tab: Services
     style: row
     columns: 3
   Manga:
+    tab: Services
     style: row
     columns: 2
   Media Automation:
+    tab: Services
     style: row
     columns: 3
   Identity:
+    tab: Services
     style: row
     columns: 3
   Infrastructure:
+    tab: Services
+    style: row
+    columns: 2
+  Monitoring:
+    tab: Services
     style: row
     columns: 2
   AI Lab:
+    tab: Services
     style: row
     columns: 4
+  Cluster Nodes:
+    tab: Nodes
+    style: row
+    columns: 2
