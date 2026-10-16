@@ -9,27 +9,24 @@
           url: http://tasks.argus_prometheus:9090
           refreshInterval: 10000
           metrics:
-            - label: CPU
-              query: 100 - (avg(rate(node_cpu_seconds_total{mode="idle",instance="gaia"}[5m])) * 100)
+            - label: Uptime
+              query: node_time_seconds - node_boot_time_seconds{instance="gaia"}
+              format:
+                type: duration
+            - label: RAM Used
+              query: node_memory_MemTotal_bytes{instance="gaia"} - node_memory_MemAvailable_bytes{instance="gaia"}
+              format:
+                type: bytes
+            - label: Disk Free
+              query: node_filesystem_avail_bytes{instance="gaia",mountpoint="/"}
+              format:
+                type: bytes
+            - label: Load (1m)
+              query: node_load1{instance="gaia"}
               format:
                 type: number
-                suffix: "%"
                 options:
-                  maximumFractionDigits: 1
-            - label: RAM
-              query: (1 - (node_memory_MemAvailable_bytes{instance="gaia"} / node_memory_MemTotal_bytes{instance="gaia"})) * 100
-              format:
-                type: number
-                suffix: "%"
-                options:
-                  maximumFractionDigits: 1
-            - label: Disk
-              query: (1 - (node_filesystem_avail_bytes{instance="gaia",mountpoint=~"/|/rootfs"} / node_filesystem_size_bytes{instance="gaia",mountpoint=~"/|/rootfs"})) * 100
-              format:
-                type: number
-                suffix: "%"
-                options:
-                  maximumFractionDigits: 1
+                  maximumFractionDigits: 2
 
     - Muspelheim:
         icon: si-debian
@@ -40,24 +37,21 @@
           url: http://tasks.argus_prometheus:9090
           refreshInterval: 10000
           metrics:
-            - label: CPU
-              query: 100 - (avg(rate(node_cpu_seconds_total{mode="idle",instance="muspelheim"}[5m])) * 100)
+            - label: Uptime
+              query: node_time_seconds - node_boot_time_seconds{instance="muspelheim"}
+              format:
+                type: duration
+            - label: RAM Used
+              query: node_memory_MemTotal_bytes{instance="muspelheim"} - node_memory_MemAvailable_bytes{instance="muspelheim"}
+              format:
+                type: bytes
+            - label: Disk Free
+              query: node_filesystem_avail_bytes{instance="muspelheim",mountpoint="/"}
+              format:
+                type: bytes
+            - label: Load (1m)
+              query: node_load1{instance="muspelheim"}
               format:
                 type: number
-                suffix: "%"
                 options:
-                  maximumFractionDigits: 1
-            - label: RAM
-              query: (1 - (node_memory_MemAvailable_bytes{instance="muspelheim"} / node_memory_MemTotal_bytes{instance="muspelheim"})) * 100
-              format:
-                type: number
-                suffix: "%"
-                options:
-                  maximumFractionDigits: 1
-            - label: Disk
-              query: (1 - (node_filesystem_avail_bytes{instance="muspelheim",mountpoint=~"/|/rootfs"} / node_filesystem_size_bytes{instance="muspelheim",mountpoint=~"/|/rootfs"})) * 100
-              format:
-                type: number
-                suffix: "%"
-                options:
-                  maximumFractionDigits: 1
+                  maximumFractionDigits: 2
