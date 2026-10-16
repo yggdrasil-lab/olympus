@@ -24,6 +24,7 @@ Olympus provides the network ingress, management, and dashboard for the Yggdrasi
 |---------|---------|----------|
 | Traefik | Reverse proxy, TLS termination | `traefik.${DOMAIN}` |
 | Cloudflared | Zero-trust tunnel to Cloudflare edge | — |
+| AdGuard Home | Split-horizon DNS, ad/tracker filtering | `adguard.${DOMAIN}` |
 | Portainer | Container management UI | `portainer.${DOMAIN}` |
 | Portainer Agent | Global cluster visibility (all nodes) | — |
 | Watchtower | Automated container updates (4 AM daily) | — |

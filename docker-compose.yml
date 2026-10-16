@@ -204,6 +204,44 @@ services:
         - "traefik.http.routers.homepage.middlewares=authelia"
         - "traefik.http.services.homepage.loadbalancer.server.port=3000"
 
+  adguardhome:
+    image: adguard/adguardhome:latest
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "3000:3000/tcp" # Initial setup
+      - "853:853/tcp"  # DNS-over-TLS
+      - "784:784/udp"  # DNS-over-QUIC
+    volumes:
+      - /opt/olympus/adguard/work:/opt/adguardhome/work
+      - /opt/olympus/adguard/conf:/opt/adguardhome/conf
+    networks:
+      - aether-net
+    labels:
+      - "com.docker.compose.project=${STACK_NAME}"
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.adguard.rule=Host(`adguard.${CLOUDFLARE_DOMAIN}`)"
+        - "traefik.http.routers.adguard.entrypoints=websecure"
+        - "traefik.http.routers.adguard.tls=true"
+        - "traefik.http.routers.adguard.tls.certresolver=cloudflare"
+        - "traefik.http.services.adguard.loadbalancer.server.port=80"
+        - "traefik.http.routers.adguard.middlewares=authelia"
+        # --- HOMEPAGE LABELS ---
+        - "homepage.group=Infrastructure"
+        - "homepage.name=AdGuard Home"
+        - "homepage.icon=adguard-home.png"
+        - "homepage.href=https://adguard.${CLOUDFLARE_DOMAIN}"
+        - "homepage.description=DNS & Ad-Blocker"
+      restart_policy:
+        condition: on-failure
+
 volumes:
   traefik-data:
   portainer_data:
