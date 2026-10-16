@@ -1,7 +1,7 @@
 ---
 - Cluster Nodes:
     - Gaia:
-        icon: debian.png
+        icon: si-debian
         href: https://grafana.tienzo.net
         description: Manager Node (192.168.86.166)
         widget:
@@ -32,7 +32,7 @@
                   maximumFractionDigits: 1
 
     - Muspelheim:
-        icon: debian.png
+        icon: si-debian
         href: https://grafana.tienzo.net
         description: Worker Node (192.168.86.185)
         widget:
