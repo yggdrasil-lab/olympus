@@ -16,6 +16,10 @@ layout:
     tab: Services
     style: row
     columns: 3
+  Downloads:
+    tab: Services
+    style: row
+    columns: 3
   Identity:
     tab: Services
     style: row

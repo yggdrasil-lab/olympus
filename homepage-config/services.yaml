@@ -1,4 +1,23 @@
 ---
+- Downloads:
+    - qBittorrent:
+        icon: qbittorrent.png
+        href: http://muspelheim:8080
+        description: Torrent Client
+        siteMonitor: http://qbittorrent:8080
+
+    - SABnzbd:
+        icon: sabnzbd.png
+        href: http://muspelheim:8085
+        description: Usenet Client
+        siteMonitor: http://sabnzbd:8085
+
+    - slskd:
+        icon: slskd.png
+        href: http://muspelheim:5030
+        description: Soulseek Client
+        siteMonitor: http://slskd:5030
+
 - Cluster Nodes:
     - Gaia:
         icon: si-debian
