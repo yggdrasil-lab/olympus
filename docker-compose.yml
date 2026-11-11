@@ -7,7 +7,12 @@ services:
     image: "traefik:v2.11"
     labels:
       - "com.docker.compose.project=${STACK_NAME}"
-    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "traefik", "healthcheck", "--ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
     security_opt:
       - no-new-privileges:true
     ports:
@@ -20,6 +25,7 @@ services:
       # Static Configuration (Moved from command to Env for proper merging)
       - "TRAEFIK_LOG_LEVEL=INFO"
       - "TRAEFIK_API_DASHBOARD=true"
+      - "TRAEFIK_PING=true"
       - "TRAEFIK_PROVIDERS_DOCKER=true"
       - "TRAEFIK_PROVIDERS_DOCKER_EXPOSEDBYDEFAULT=false"
       - "TRAEFIK_PROVIDERS_DOCKER_SWARMMODE=true"
@@ -64,6 +70,8 @@ services:
           memory: 512M
         reservations:
           memory: 128M
+      restart_policy:
+        condition: any
       labels:
         - "traefik.enable=true"
         # Dashboard Router
@@ -88,12 +96,18 @@ services:
     image: "cloudflare/cloudflared:latest"
     labels:
       - "com.docker.compose.project=${STACK_NAME}"
-    restart: unless-stopped
     depends_on:
       - traefik
     environment:
       - TUNNEL_TOKEN=${TUNNEL_TOKEN}
-    command: tunnel run
+      - TUNNEL_METRICS=0.0.0.0:2000
+    command: tunnel --metrics 0.0.0.0:2000 run
+    healthcheck:
+      test: ["CMD", "cloudflared", "tunnel", "--metrics", "0.0.0.0:2000", "ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
     networks:
       - aether-net
     deploy:
@@ -107,6 +121,8 @@ services:
           memory: 256M
         reservations:
           memory: 64M
+      restart_policy:
+        condition: any
       labels:
         - "traefik.enable=false"
 
@@ -139,6 +155,12 @@ services:
       - HOMEPAGE_VAR_KOMGA_KEY=${KOMGA_API_KEY}
     networks:
       - aether-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://127.0.0.1:3000/api/healthcheck || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
     deploy:
       mode: replicated
       replicas: 1
@@ -150,6 +172,8 @@ services:
           memory: 256M
         reservations:
           memory: 64M
+      restart_policy:
+        condition: any
       labels:
         - "traefik.enable=true"
         - "traefik.http.routers.homepage.rule=Host(`zeus.${CLOUDFLARE_DOMAIN}`)"
@@ -172,6 +196,12 @@ services:
       - aether-net
     labels:
       - "com.docker.compose.project=${STACK_NAME}"
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://127.0.0.1:80/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
     deploy:
       mode: replicated
       replicas: 1
@@ -198,7 +228,7 @@ services:
         - "homepage.href=https://adguard.${CLOUDFLARE_DOMAIN}"
         - "homepage.description=DNS & Ad-Blocker"
       restart_policy:
-        condition: on-failure
+        condition: any
 
 volumes:
   traefik-data:
