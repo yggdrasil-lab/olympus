@@ -11,6 +11,39 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Validate Required Configuration
+        env:
+          CLOUDFLARE_DOMAIN: ${{ vars.DOMAIN_NAME }}
+          CLOUDFLARE_EMAIL: ${{ vars.CLOUDFLARE_EMAIL }}
+          CLOUDFLARE_API_KEY: ${{ secrets.CF_DNS_API_TOKEN }}
+          TRAEFIK_TUNNEL_TOKEN: ${{ secrets.TUNNEL_TOKEN }}
+          SONARR_API_KEY: ${{ secrets.SONARR_API_KEY }}
+          RADARR_API_KEY: ${{ secrets.RADARR_API_KEY }}
+          JELLYFIN_API_KEY: ${{ secrets.JELLYFIN_API_KEY }}
+          LIDARR_API_KEY: ${{ secrets.LIDARR_API_KEY }}
+          AUDIOBOOKSHELF_API_KEY: ${{ secrets.AUDIOBOOKSHELF_API_KEY }}
+          SEERR_API_KEY: ${{ secrets.SEERR_API_KEY }}
+          JELLYSTAT_API_KEY: ${{ secrets.JELLYSTAT_API_KEY }}
+          KOMGA_API_KEY: ${{ secrets.KOMGA_API_KEY }}
+        run: |
+          MISSING=""
+          [ -z "$CLOUDFLARE_DOMAIN" ] && MISSING="$MISSING CLOUDFLARE_DOMAIN"
+          [ -z "$CLOUDFLARE_EMAIL" ] && MISSING="$MISSING CLOUDFLARE_EMAIL"
+          [ -z "$CLOUDFLARE_API_KEY" ] && MISSING="$MISSING CLOUDFLARE_API_KEY"
+          [ -z "$TRAEFIK_TUNNEL_TOKEN" ] && MISSING="$MISSING TRAEFIK_TUNNEL_TOKEN"
+          [ -z "$SONARR_API_KEY" ] && MISSING="$MISSING SONARR_API_KEY"
+          [ -z "$RADARR_API_KEY" ] && MISSING="$MISSING RADARR_API_KEY"
+          [ -z "$JELLYFIN_API_KEY" ] && MISSING="$MISSING JELLYFIN_API_KEY"
+          [ -z "$LIDARR_API_KEY" ] && MISSING="$MISSING LIDARR_API_KEY"
+          [ -z "$AUDIOBOOKSHELF_API_KEY" ] && MISSING="$MISSING AUDIOBOOKSHELF_API_KEY"
+          [ -z "$SEERR_API_KEY" ] && MISSING="$MISSING SEERR_API_KEY"
+          [ -z "$JELLYSTAT_API_KEY" ] && MISSING="$MISSING JELLYSTAT_API_KEY"
+          [ -z "$KOMGA_API_KEY" ] && MISSING="$MISSING KOMGA_API_KEY"
+          if [ -n "$MISSING" ]; then
+            echo "::error::Deployment halted: missing required configuration:$MISSING" >&2
+            exit 1
+          fi
+
       - name: Setup Secrets
         env:
           CF_DNS_TOKEN: ${{ secrets.CF_DNS_API_TOKEN }}
@@ -23,7 +56,7 @@ jobs:
         env:
           # Environment Config
           TUNNEL_TOKEN: ${{ secrets.TUNNEL_TOKEN }}
-          CLOUDFLARE_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
+          CLOUDFLARE_EMAIL: ${{ vars.CLOUDFLARE_EMAIL }}
           CLOUDFLARE_DOMAIN: ${{ vars.DOMAIN_NAME }}
           SONARR_API_KEY: ${{ secrets.SONARR_API_KEY }}
           RADARR_API_KEY: ${{ secrets.RADARR_API_KEY }}
